@@ -42,7 +42,7 @@ $$
 | $X^2 + Y^2$ | ![train](/../../write ups/train-1539621526191.png) | ![predicted](/../../write ups/predicted-1539621543117.png) | ![predicted_cj](/../../write ups/predicted_cj-1539621567040.png) |
 | $X^3+Y^3$   | ![train](/../../write ups/train-1539621586063.png) | ![predicted](/../../write ups/predicted-1539621603497.png) | ![predicted_cj](/../../write ups/predicted_cj-1539621620995.png) |
 
-**Table 1:**  Predictions for naive gp and conjugate gradient methods against the training data with missing observations.
+**Table 1:**  Predictions for naive gp and conjugate gradient methods against the training data with missing observations. Each of the above images are contour plots.
 
 | Function    | Naive , $\sigma_f$, $l$ | Naive loss          | Conv Loss |
 | ----------- | ----------------------- | ------------------- | --------- |

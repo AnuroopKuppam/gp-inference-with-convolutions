@@ -8,6 +8,10 @@ typora-root-url: ../code/results
 
 ### October 15, 2018
 
+Github: https://github.com/AnuroopKuppam/conv-gps
+
+Conv-gp implementation: https://colab.research.google.com/drive/1P7IBJI01EuehxWorcvcmDtqbn3RI87D_
+
 #### Experimental results
 
 ## 1. Results comparison Naive vs Convolutions with Conjugate gradient loss

@@ -7,16 +7,22 @@ import itertools
 
 class naive_gp():
     def __init__(self, n, missing=False, missing_indices=[]):
+        # size of the grid
         self.n = n
+        # mask for missing indices
         self.missing_indices = np.array(missing_indices)
         self.missing = missing
+        # variance for noise
         self.noise = 1e-6
+        # variance for filling missing observations
         self.miss = 1e100
+        # sqaured exponential kernel hyperparameters
         self.sigma_f = None
         self.l = None
         self.dotproducts = self._dotproducts(self.n)
         return
 
+    # function to predict after learning the hyper parameters
     def predict(self, y):
         y = np.ndarray.flatten(y)
         K_p = self._kernel(self.n, y, self.sigma_f, self.l, mode='predict')
@@ -26,6 +32,7 @@ class naive_gp():
         alpha = cho_solve((L, lower), y)   # K_inv.y
         return np.dot(K_p, alpha)
 
+    # subroutine to create dot products against all indices to make the kernel matrix
     def _dotproducts(self, n):
         dot_product = np.zeros((n ** 2, n ** 2))
         x = np.arange(0, n, 1)
@@ -40,6 +47,11 @@ class naive_gp():
                 dot_product[i, j] = dot
         return dot_product
 
+    # subroutine for the squared exponential kernel
+    # mode: predict returns a kernel with no noise
+    # mode: fit retuns a kernel with noise and missing variance
+    # objective: returns the log marginal likelihood
+    # grad: returns the gradients wrt to hyper parameters
     def _kernel(self, n, Y, sigma_f=0.1, l=10, mode='predict'):
         K = sigma_f ** 2 * np.exp(-1 * self.dotproducts / (2 * l ** 2))
         K_grad = np.array(K)
@@ -73,12 +85,14 @@ class naive_gp():
             grad_l = 0.5 * np.trace(np.dot(alpha_alpha - k_inv, grad_l))
             return np.array([grad_sigma_f, grad_l])
 
+    # calculate the objective
     def objective(self, sigma_f_l, y):
         sigma_f = sigma_f_l[0]
         l = sigma_f_l[1]
         objective = self._kernel(self.n, y, sigma_f, l, mode='objective')
         return -1.0 * objective
 
+    # calculate the gradients for the objective
     def objective_grad(self, sigma_f_l, y):
         sigma_f = sigma_f_l[0]
         l = sigma_f_l[1]
@@ -86,6 +100,7 @@ class naive_gp():
         print(sigma_f_l, grad)
         return -1.0 * grad
 
+    # optimize wrt to the data
     def fit(self, y):
         y = np.ndarray.flatten(y)
         x, f, d = fmin_l_bfgs_b(self.objective, x0=np.array([5, 10]), fprime=self.objective_grad, args=(y,))
